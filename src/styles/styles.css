@@ -1,0 +1,242 @@
+/* Base Styles */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Arial", sans-serif;
+  color: #333;
+  max-width: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f4f8; /* Cool background color */
+  overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+/* Header Styles */
+header {
+  background-color: #2c3e50; /* Cool dark blue */
+  color: #ecf0f1; /* Light text color */
+  padding: 1rem 2rem;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0 auto;
+}
+
+header a {
+  color: #ecf0f1;
+  text-decoration: none;
+  margin-right: 15px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+header button {
+  background-color: #e74c3c; /* Cool red */
+  color: #ecf0f1;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px; /* Margin for spacing */
+}
+
+header button:hover {
+  background-color: #c0392b; /* Darker red */
+}
+
+/* Footer Styles */
+footer {
+  background-color: #2c3e50; /* Cool dark blue */
+  color: #ecf0f1;
+  padding: 1rem 2rem;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.home,
+.dashboard,
+.auth-page,
+.login-page,
+.post-page {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
+}
+
+.home__title {
+  font-size: 2rem;
+  font-weight: bolder;
+}
+
+.home__welcome-message {
+  text-align: center;
+  font-size: 4rem;
+  font-weight: bolder;
+}
+
+h1,
+h2,
+h3 {
+  color: #2c3e50; /* Dark blue for headings */
+}
+
+/* Button Styles */
+button {
+  background-color: #3498db; /* Cool blue */
+  color: #ffffff;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  margin: 0.5rem; /* Margin for spacing */
+}
+
+button:hover {
+  background-color: #2980b9; /* Darker blue */
+}
+
+/* Form Elements */
+textarea,
+input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+textarea {
+  min-height: 120px; /* Ensure enough space for text */
+}
+
+input {
+  font-size: 1rem;
+}
+
+/* Error Message */
+.error {
+  color: #e74c3c; /* Error color */
+}
+
+/* Post Styles */
+.post {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.post h2 {
+  margin-top: 0;
+}
+
+.post p {
+  margin: 0.5rem 0;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  header {
+    padding: 0.5rem 1rem;
+  }
+
+  header a {
+    margin-right: 10px;
+  }
+
+  header button {
+    padding: 0.5rem 1rem;
+  }
+
+  .home,
+  .dashboard,
+  .auth-page,
+  .login-page,
+  .post-page {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+  }
+
+  .home__title,
+  .dashboard__title {
+    font-size: 1rem;
+    font-weight: bolder;
+  }
+
+  .home__welcome-message {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bolder;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    overflow-y: scroll; /* Prevent horizontal overflow */
+  }
+
+  header {
+    position: relative;
+    padding: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header a {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  header button {
+    margin-left: 0;
+  }
+
+  footer {
+    position: fixed;
+    padding: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  footer p {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  textarea,
+  input {
+    font-size: 0.9rem;
+  }
+}
