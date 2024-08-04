@@ -1,18 +1,11 @@
-/* Base Styles */
+/* Global Styles */
 html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  font-family: "Arial", sans-serif;
-  color: #333;
-  max-width: 100%;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  background-color: #f0f4f8; /* Cool background color */
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  height: 100%; /* Ensure the body takes the full viewport height */
   overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
@@ -23,12 +16,12 @@ header {
   padding: 1rem 2rem;
   position: fixed;
   top: 0;
-  width: 100vw;
+  height: 60px;
+  width: 100%;
   z-index: 1000;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: 0 auto;
 }
 
 header a {
@@ -62,36 +55,82 @@ footer {
   position: fixed;
   bottom: 0;
   width: 100%;
+  z-index: 1000;
 }
 
-.home,
-.dashboard,
-.auth-page,
-.login-page,
-.post-page {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: 50%;
+/* Main Styles */
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100vh - 120px); /* Full height minus header and footer */
+  margin-top: 60px; /* Offset by header height */
+  margin-bottom: 60px; /* Offset by footer height */
 }
 
-.home__title {
-  font-size: 2rem;
-  font-weight: bolder;
+/* Grid Container Styles */
+.grid-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap onto multiple lines */
+  justify-content: center; /* Center items horizontally */
+  align-content: flex-start; /* Align items to the top */
+  gap: 10px; /* Space between items */
+  width: 100%;
+  max-width: 1200px; /* Max width for the container */
+  box-sizing: border-box; /* Prevent overflow */
 }
 
-.home__welcome-message {
-  text-align: center;
-  font-size: 4rem;
-  font-weight: bolder;
+/* Grid Item Styles */
+.grid-item {
+  background: #fff;
+  border: 1px solid #ddd; /* Visible border */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensure equal height */
+  min-height: 250px; /* Consistent height */
+  width: calc(
+    20% - 20px
+  ); /* Fixed width for grid items with gap consideration */
+  box-sizing: border-box;
 }
 
-h1,
-h2,
-h3 {
-  color: #2c3e50; /* Dark blue for headings */
+/* Empty Grid Item Styles */
+.grid-item.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 250px; /* Ensure empty items match the height of other items */
+  color: #aaa;
+  border: 1px solid #ddd; /* Match border with filled grid items */
+}
+
+/* Content Styles */
+.content {
+  flex: 1;
+}
+
+.content iframe {
+  width: 100%;
+  height: 200px;
+  border: none;
+}
+
+.content img {
+  width: 100%;
+  height: auto;
+}
+
+.content p.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 /* Button Styles */
@@ -133,110 +172,4 @@ input {
 /* Error Message */
 .error {
   color: #e74c3c; /* Error color */
-}
-
-/* Post Styles */
-.post {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.post h2 {
-  margin-top: 0;
-}
-
-.post p {
-  margin: 0.5rem 0;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-  header {
-    padding: 0.5rem 1rem;
-  }
-
-  header a {
-    margin-right: 10px;
-  }
-
-  header button {
-    padding: 0.5rem 1rem;
-  }
-
-  .home,
-  .dashboard,
-  .auth-page,
-  .login-page,
-  .post-page {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50%;
-    height: 50%;
-  }
-
-  .home__title,
-  .dashboard__title {
-    font-size: 1rem;
-    font-weight: bolder;
-  }
-
-  .home__welcome-message {
-    text-align: center;
-    font-size: 2.5rem;
-    font-weight: bolder;
-  }
-
-  button {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  body {
-    overflow-y: scroll; /* Prevent horizontal overflow */
-  }
-
-  header {
-    position: relative;
-    padding: 0.5rem;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  header a {
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-  }
-
-  header button {
-    margin-left: 0;
-  }
-
-  footer {
-    position: fixed;
-    padding: 0.5rem;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  footer p {
-    font-size: 12px;
-    text-align: center;
-  }
-
-  button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
-  }
-
-  textarea,
-  input {
-    font-size: 0.9rem;
-  }
 }
