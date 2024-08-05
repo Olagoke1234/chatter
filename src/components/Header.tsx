@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth"; // Correct import
-import { auth } from "../firebaseConfig"; // Correct import
+import { signOut } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 import "../styles/styles.css";
 
 const Header: React.FC = () => {
@@ -9,7 +9,7 @@ const Header: React.FC = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth); // Correct function call
+      await signOut(auth);
       navigate("/");
     } catch (error) {
       console.error("Sign out error:", error);

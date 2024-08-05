@@ -1,105 +1,140 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { collection, addDoc } from "firebase/firestore";
+import { PostType, ContentItem } from "../types/PostType";
 import { db } from "../firebaseConfig";
-
-interface PostContent {
-  type: "text" | "video" | "audio" | "image";
-  content: string;
-}
+import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 
 interface PostComponentProps {
-  title?: string;
-  content?: PostContent[];
+  post: PostType;
 }
 
-const convertToEmbedUrl = (url: string): string => {
-  try {
-    const videoId = new URL(url).searchParams.get("v");
-    if (videoId) {
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-  } catch (e) {
-    // Handle error if URL is invalid or cannot be parsed
-  }
-  return url; // Return original URL if it's not a YouTube URL
-};
-
-const PostComponent: React.FC<PostComponentProps> = ({
-  title = "",
-  content = [],
-}) => {
-  const [postTitle, setPostTitle] = useState(title);
-  const [postContent, setPostContent] = useState<PostContent[]>(content);
-  const navigate = useNavigate();
+const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState(post.comments);
+  const [likes, setLikes] = useState(post.likes);
 
   useEffect(() => {
-    if (title) setPostTitle(title);
-    if (content) setPostContent(content);
-  }, [title, content]);
+    const postRef = doc(db, "posts", post.id);
 
-  const handleAddContent = (type: PostContent["type"]) => {
-    const newContent: PostContent = { type, content: "" };
-    setPostContent([...postContent, newContent]);
+    // Listen for real-time updates to comments and likes
+    const unsubscribe = onSnapshot(postRef, (doc) => {
+      const data = doc.data() as PostType;
+      if (data) {
+        setComments(data.comments);
+        setLikes(data.likes);
+      } else {
+        console.error("No data found for post:", post.id);
+      }
+    });
+
+    // Clean up listener on component unmount
+    return () => unsubscribe();
+  }, [post.id]);
+
+  const handleLikeClick = async () => {
+    try {
+      const postRef = doc(db, "posts", post.id);
+      await updateDoc(postRef, { likes: likes + 1 });
+    } catch (error) {
+      console.error("Error updating likes:", error);
+    }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await addDoc(collection(db, "posts"), {
-        title: postTitle,
-        content: postContent.map((c) => ({
-          ...c,
-          content:
-            c.type === "video" ? convertToEmbedUrl(c.content) : c.content,
-        })),
-      });
-      navigate("/");
-    } catch (error) {
-      console.error("Error adding document: ", error);
+  const handleCommentSubmit = async () => {
+    if (newComment.trim()) {
+      try {
+        const postRef = doc(db, "posts", post.id);
+        const updatedComments = [
+          ...comments,
+          { author: "Current User", text: newComment },
+        ];
+        await updateDoc(postRef, { comments: updatedComments });
+        setNewComment("");
+      } catch (error) {
+        console.error("Error updating comments:", error);
+      }
     }
+  };
+
+  // Function to convert YouTube URL to embed URL
+  const convertToEmbedUrl = (videoUrl: string) => {
+    const videoIdMatch =
+      videoUrl.match(
+        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^\s&]+)/
+      ) || videoUrl.match(/(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^\s&]+)/);
+
+    const videoId = videoIdMatch ? videoIdMatch[1] : "";
+    if (!videoId) {
+      console.error("Invalid YouTube URL, could not extract videoId");
+      return ""; // Return empty string if videoId could not be extracted
+    }
+
+    console.log("Converting videoUrl:", videoUrl); // Log videoUrl to ensure it's valid
+    return `https://www.youtube.com/embed/${videoId}`;
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={postTitle}
-        onChange={(e) => setPostTitle(e.target.value)}
-        placeholder="Title"
-        required
-      />
-      {postContent.map((c, index) => (
-        <div key={index}>
-          <input
-            type="text"
-            value={c.content}
-            onChange={(e) =>
-              setPostContent(
-                postContent.map((item, i) =>
-                  i === index ? { ...item, content: e.target.value } : item
-                )
-              )
-            }
-            placeholder={`Content ${index + 1}`}
-            required
-          />
+    <div className="post-item">
+      <h2 className="post-title">{post.title}</h2>
+      <div className="post-content">
+        {post.content.map((item: ContentItem, index: number) => {
+          console.log("Rendering item:", item); // Debugging log
+          switch (item.type) {
+            case "text":
+              const textContent = item.content?.trim(); // Access `content` property
+              console.log("Text Content:", textContent); // Debugging log
+              return textContent ? <p key={index}>{textContent}</p> : null;
+            case "image":
+              return item.imageUrl ? (
+                <img key={index} src={item.imageUrl} alt="Post content" />
+              ) : null;
+            case "video":
+              const videoEmbedUrl = convertToEmbedUrl(item.content);
+              console.log("Video Embed URL:", videoEmbedUrl); // Debugging log
+              return videoEmbedUrl ? (
+                <div key={index} className="video-container">
+                  <iframe
+                    src={videoEmbedUrl}
+                    title="YouTube video"
+                    frameBorder="0"
+                    allowFullScreen
+                    width="100%"
+                    height="auto"
+                  ></iframe>
+                </div>
+              ) : null;
+            case "audio":
+              return item.audioUrl ? (
+                <audio key={index} controls>
+                  <source src={item.audioUrl} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              ) : null;
+            default:
+              return null;
+          }
+        })}
+      </div>
+      <div className="post-footer">
+        <button className="like-button" onClick={handleLikeClick}>
+          <i className="fas fa-thumbs-up"></i> {likes} Likes
+        </button>
+        <div className="post-comments">
+          {comments.map((comment, index) => (
+            <div key={index} className="comment">
+              <strong>{comment.author}:</strong> {comment.text}
+            </div>
+          ))}
+          <div className="comment-form">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Add a comment..."
+            />
+            <button onClick={handleCommentSubmit}>Submit Comment</button>
+          </div>
         </div>
-      ))}
-      <button type="button" onClick={() => handleAddContent("text")}>
-        Add Text
-      </button>
-      <button type="button" onClick={() => handleAddContent("video")}>
-        Add Video
-      </button>
-      <button type="button" onClick={() => handleAddContent("audio")}>
-        Add Audio
-      </button>
-      <button type="button" onClick={() => handleAddContent("image")}>
-        Add Image
-      </button>
-      <button type="submit">Submit</button>
-    </form>
+      </div>
+    </div>
   );
 };
 

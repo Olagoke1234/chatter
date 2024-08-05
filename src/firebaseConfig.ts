@@ -1,5 +1,3 @@
-// src/firebaseConfig.ts
-
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -23,7 +21,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
-const db = getFirestore(app);
+const db = getFirestore(app); // Correct export
 const storage = getStorage(app);
 
 export { auth, googleProvider, facebookProvider, db, storage };
